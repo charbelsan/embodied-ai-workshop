@@ -1,0 +1,64 @@
+#!/bin/bash
+# Boot warm-up of a team machine (root). Each step appends "<name> <epoch> <utc> [info]" to /var/log/vinci-timings.log.
+# cold_* = first Isaac launch after boot, warm_* = immediate relaunch (shader caches in place).
+source /etc/vinci/workshop.env
+M=/var/log/vinci-timings.log
+mark() { echo "$1 $(date +%s.%N) $(date -u +%FT%TZ) ${2:-}" >> $M; }
+H=/home/ubuntu; L=/var/log/vinci-warmup; mkdir -p $L; chmod 755 $L
+as_u() { sudo -u ubuntu env DISPLAY=:0 XAUTHORITY=$H/.Xauthority HOME=$H OMNI_KIT_ACCEPT_EULA=YES PYTHONUNBUFFERED=1 "$@"; }
+http_ok() { [ "$(curl -s -o /dev/null -m 10 -w '%{http_code}' "$SERVICE_HEALTH_URL")" = "200" ]; }
+kill_u() { pkill -u ubuntu -f "$1"; sleep 5; pkill -9 -u ubuntu -f "$1"; }
+
+mark warmup_start
+systemctl stop vinci-skill-server 2>/dev/null
+cloud-init status --wait >/dev/null 2>&1; mark cloud_init_done
+# workshop not installed yet (first boot of a builder): nothing to warm up. Never copy an empty WS_DIR, which would be "/"
+if [ -z "${WS_DIR:-}" ] || [ "$WS_DIR" = / ] || [ ! -d "$WS_DIR" ]; then mark no_workshop "${WS_DIR:-unset}"; mark warmup_end; exit 0; fi
+[ -d /opt/vinci/pristine/workspace ] || { mkdir -p /opt/vinci/pristine && rsync -a "$WS_DIR/" /opt/vinci/pristine/workspace/; }
+[ -d "$WS_DIR" ] && mark repo_present "$(cat /opt/vinci-workshop/VERSION 2>/dev/null)"
+/usr/local/bin/vinci-xorg-fix --restart > $L/xorg-fix.log 2>&1
+for _ in $(seq 300); do as_u xdpyinfo >/dev/null 2>&1 && break; sleep 2; done
+as_u xdpyinfo >/dev/null 2>&1 && mark x_ready || mark x_failed
+until dcv list-sessions 2>/dev/null | grep -q "'console'" && ss -ltn | grep -q ':8443 '; do sleep 2; done
+[ -f /etc/dcv/default.perm ] && dcv set-permissions --session console --file /etc/dcv/default.perm >/dev/null 2>&1
+mark dcv_ready
+
+first_env() {  # $1 = cold|warm : open the first environment in the Isaac UI, mark window / env loaded / robot motion
+  local log=$L/first_env_$1.log w=0 rt=0
+  ( cd "$WS_DIR" && as_u timeout 1500 $WS_PY $FIRST_ENV_CMD < /dev/null > $log 2>&1 ) &
+  local pid=$!
+  for _ in $(seq 1500); do
+    if [ $w = 0 ] && as_u xwininfo -root -tree 2>/dev/null | grep -q "\"$ISAAC_WINDOW_RE"; then mark ${1}_isaac_window; w=1; fi
+    [ -n "$FIRST_ENV_MOTION_RE" ] && grep -q "$FIRST_ENV_MOTION_RE" $log && break
+    if [ $rt = 0 ] && grep -q "$FIRST_ENV_READY_RE" $log; then rt=$(date +%s); fi
+    [ $rt != 0 ] && { [ -z "$FIRST_ENV_MOTION_RE" ] || [ $(( $(date +%s) - rt )) -gt 120 ]; } && break
+    kill -0 $pid 2>/dev/null || break
+    sleep 1
+  done
+  grep -q "$FIRST_ENV_READY_RE" $log && mark ${1}_env_loaded "$(grep -oE "$FIRST_ENV_READY_RE [0-9.]+s" $log | head -1)" || mark ${1}_env_failed
+  grep -q "$FIRST_ENV_MOTION_RE" $log && mark ${1}_robot_motion "$(grep -oE "$FIRST_ENV_MOTION_RE [0-9.]+s" $log | head -1)"
+  sleep 3; dcv get-screenshot --max-width 1280 --format png --output $L/first_env_$1.png console >/dev/null 2>&1
+  kill_u "$FIRST_ENV_CMD"
+}
+first_env cold
+first_env warm
+
+if [ "${SMOKE_CELLS:-0}" != "0" ]; then   # headless service + first notebook cells
+  ( as_u nohup /usr/local/bin/vinci-service $SERVICE_HEADLESS_ARGS < /dev/null > $L/service_smoke.log 2>&1 & )
+  for _ in $(seq 900); do http_ok && break; sleep 1; done
+  http_ok && mark service_ready_headless || mark service_failed_headless
+  as_u $NB_BIN/python -c "
+import json; nb=json.load(open('$SMOKE_NOTEBOOK')); nb['cells']=nb['cells'][:$SMOKE_CELLS]; json.dump(nb, open('/tmp/vinci_smoke.ipynb','w'))" > $L/smoke_trim.log 2>&1
+  if as_u timeout 900 $NB_BIN/jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=600 \
+       --output /tmp/vinci_smoke_out.ipynb /tmp/vinci_smoke.ipynb > $L/smoke.log 2>&1; then mark smoke_passed; else mark smoke_failed; fi
+  kill_u "vinci-service"; kill_u "$SERVICE_CMD"
+fi
+systemctl start vinci-skill-server   # participant state: service with the Isaac UI in the DCV desktop
+for _ in $(seq 900); do http_ok && break; sleep 1; done
+http_ok && mark workspace_ready || mark workspace_failed
+# PC scene: started here, before the team arrives (a hung first start is restarted by its supervisor)
+pc_ok() { curl -s -m 5 http://127.0.0.1:8766/health 2>/dev/null | grep -q '"ok": true'; }
+systemctl start vinci-pc-scene
+for _ in $(seq 600); do pc_ok && break; systemctl is-active --quiet vinci-pc-scene || break; sleep 1; done
+pc_ok && mark pc_scene_ready || mark pc_scene_failed
+mark warmup_end

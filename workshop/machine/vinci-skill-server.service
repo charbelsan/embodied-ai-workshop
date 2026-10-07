@@ -1,0 +1,14 @@
+[Unit]
+Description=VINCI workshop service (Isaac UI visible in the DCV desktop), driven by the participant notebook
+After=graphical.target dcvserver.service
+
+[Service]
+User=ubuntu
+Environment=DISPLAY=:0 XAUTHORITY=/home/ubuntu/.Xauthority HOME=/home/ubuntu OMNI_KIT_ACCEPT_EULA=YES PYTHONUNBUFFERED=1
+ExecStart=/usr/local/bin/vinci-service
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+StandardInput=null
+StandardOutput=append:/var/log/vinci-warmup/service.log
+StandardError=inherit

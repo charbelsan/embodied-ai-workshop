@@ -1,0 +1,5 @@
+.cache/
+team/
+results/
+__pycache__/
+MUJOCO_LOG.TXT

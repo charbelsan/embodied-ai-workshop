@@ -1,0 +1,245 @@
+{
+ "task": "RAM stick already in the gripper -> insert it into its slot; the PC case moves (+-5 cm, +-12 deg) from one episode to the next",
+ "success": "ram_seated read by the evaluator after release and retreat (never by the skill)",
+ "eval_set": "64 fixed randomized episodes, never used for training; 95 % Wilson intervals",
+ "student_inputs": "front + wrist RGB-D 64 px, 9 joint positions + 9 joint velocities; action: 6-D hand displacement at 16 Hz, 120 steps",
+ "chain1": {
+  "teacher": "v1: succeeds alone (60/60) but switches press/lift on sub-millimetre thresholds, invisible at 64 px",
+  "teacher_sha256": "0dcbdf48e7b1e1146274b36b77703f011dd50418d214fa09f16eda6b6d04200f",
+  "teacher_demos": "63/64",
+  "rounds": [
+   {
+    "stage": "bc",
+    "samples": 7680,
+    "sha256": "35e1fdb8350edc9e454a0952cc61774229bce3780e85a2822b5fa76414bd2b8d",
+    "success": 31,
+    "n": 64,
+    "rate_pct": 48.4,
+    "ci95_pct": [
+     36.6,
+     60.4
+    ]
+   },
+   {
+    "stage": "r1",
+    "samples": 15360,
+    "sha256": "739ac747ada3af71b16a078dc530c17c7feff30bcb9001ed4fd45280f27e76da",
+    "success": 6,
+    "n": 64,
+    "rate_pct": 9.4,
+    "ci95_pct": [
+     4.4,
+     19.0
+    ]
+   },
+   {
+    "stage": "r2",
+    "samples": 23040,
+    "sha256": "e71a947e935a83d3bf83bb1e3a3dfc8dfb144e8c77aefa0808304a69c2890dac",
+    "success": 11,
+    "n": 64,
+    "rate_pct": 17.2,
+    "ci95_pct": [
+     9.9,
+     28.2
+    ]
+   }
+  ],
+  "masked_images": {
+   "success": 0,
+   "n": 64,
+   "rate_pct": 0.0,
+   "ci95_pct": [
+    0.0,
+    5.7
+   ]
+  },
+  "labels": "'lift' in 3.9 % of the demo labels but 40.8 % of the labels on the student's own states: the student learns to hover"
+ },
+ "chain2": {
+  "teacher": "v2: a continuous funnel (the correction grows smoothly with the error)",
+  "teacher_sha256": "dc870664660a03471c2734cda9dace8d644e7171bea7ba3d9262b308dfeb6a17",
+  "teacher_demos": "63/64",
+  "rounds": [
+   {
+    "stage": "bc",
+    "samples": 7680,
+    "sha256": "0c25700da888518baafbdbd3d355c8373139f16d92203f2ed54120980c5c08cf",
+    "success": 41,
+    "n": 64,
+    "rate_pct": 64.1,
+    "ci95_pct": [
+     51.8,
+     74.7
+    ]
+   },
+   {
+    "stage": "r1",
+    "samples": 15360,
+    "sha256": "72516c8e91d9849efe82500e1510ed12fc41fe95b6730ef72accdbe53dd1af66",
+    "success": 9,
+    "n": 64,
+    "rate_pct": 14.1,
+    "ci95_pct": [
+     7.6,
+     24.6
+    ]
+   },
+   {
+    "stage": "r2",
+    "samples": 23040,
+    "sha256": "c77c6b01d3f3b378f84b53e6eb444cd2f4c091be5f8a584e326a62dec22daa8d",
+    "success": 28,
+    "n": 64,
+    "rate_pct": 43.8,
+    "ci95_pct": [
+     32.3,
+     55.9
+    ]
+   },
+   {
+    "stage": "r3",
+    "samples": 30720,
+    "sha256": "89312766cc56a35f270777ea6626a1661eaab3223ccca3d874af35e925293b47",
+    "success": 37,
+    "n": 64,
+    "rate_pct": 57.8,
+    "ci95_pct": [
+     45.6,
+     69.1
+    ]
+   },
+   {
+    "stage": "r4",
+    "samples": 38400,
+    "sha256": "e53ee3cb28147555dde01edba635711d70081735c1c465c68223f0dd9a625379",
+    "success": 53,
+    "n": 64,
+    "rate_pct": 82.8,
+    "ci95_pct": [
+     71.8,
+     90.1
+    ]
+   },
+   {
+    "stage": "r5",
+    "samples": 46080,
+    "sha256": "2101d50b51e73842035d561ee67c221eb7686aac104eb9abdc310ee9b4042135",
+    "success": 56,
+    "n": 64,
+    "rate_pct": 87.5,
+    "ci95_pct": [
+     77.2,
+     93.5
+    ]
+   }
+  ],
+  "masked_images": {
+   "bc": {
+    "success": 0,
+    "n": 64,
+    "rate_pct": 0.0,
+    "ci95_pct": [
+     0.0,
+     5.7
+    ]
+   },
+   "r2": {
+    "success": 0,
+    "n": 64,
+    "rate_pct": 0.0,
+    "ci95_pct": [
+     0.0,
+     5.7
+    ]
+   }
+  },
+  "labels": "round 1 visits states where the teacher corrects hard: 'lift' in 30 % of the labels (11 % in the demos), hence the drop before the rise"
+ },
+ "controls": {
+  "same_volume": {
+   "note": "DAgger r4 vs BC on 320 teacher demos, same 38 400 samples, 192 episodes: +5 points, NOT significant (overlapping intervals)",
+   "dagger_r4": {
+    "success": 161,
+    "n": 192,
+    "rate_pct": 83.9,
+    "ci95_pct": [
+     78.0,
+     88.4
+    ]
+   },
+   "bc_320_demos": {
+    "success": 151,
+    "n": 192,
+    "rate_pct": 78.6,
+    "ci95_pct": [
+     72.3,
+     83.9
+    ]
+   }
+  },
+  "retrain_from_scratch": {
+   "note": "same data as round 2: a fresh student trained on the whole aggregate beats the short fine-tune",
+   "fresh_on_aggregate_r2": {
+    "success": 47,
+    "n": 64,
+    "rate_pct": 73.4,
+    "ci95_pct": [
+     61.5,
+     82.7
+    ]
+   },
+   "fine_tuned_r2": {
+    "success": 28,
+    "n": 64,
+    "rate_pct": 43.8,
+    "ci95_pct": [
+     32.3,
+     55.9
+    ]
+   }
+  },
+  "bc_more_demos": {
+   "note": "BC on 192 demos (the data volume of round 2)",
+   "success": 35,
+   "n": 64,
+   "rate_pct": 54.7,
+   "ci95_pct": [
+    42.6,
+    66.3
+   ]
+  }
+ },
+ "shipped": {
+  "stage": "chain2 DAgger r5",
+  "sha256": "2101d50b51e73842035d561ee67c221eb7686aac104eb9abdc310ee9b4042135",
+  "eval_64": {
+   "success": 56,
+   "n": 64,
+   "rate_pct": 87.5,
+   "ci95_pct": [
+    77.2,
+    93.5
+   ]
+  },
+  "eval_192": {
+   "success": 176,
+   "n": 192,
+   "rate_pct": 91.7,
+   "ci95_pct": [
+    86.9,
+    94.8
+   ]
+  },
+  "through_the_skill_server": {
+   "success": 18,
+   "n": 20,
+   "rate_pct": 90.0,
+   "ci95_pct": [
+    69.9,
+    97.2
+   ]
+  },
+  "failure_modes": "6/8: aligned and engaged 3.5 mm but not pushed fully home (the tight fit needs more force); 2/8: resting on a slot end stop"
+ }
+}

@@ -1,0 +1,22 @@
+#!/bin/bash
+# Team machine health (root): one JSON line with every on-instance READY check + timing marks.
+source /etc/vinci/workshop.env 2>/dev/null
+H=/home/ubuntu
+has() { grep -q "^$1 " /var/log/vinci-timings.log 2>/dev/null && echo true || echo false; }
+gpu=$(nvidia-smi --query-gpu=name,driver_version,memory.used,memory.total,utilization.gpu --format=csv,noheader,nounits 2>/dev/null | head -1)
+IFS=',' read -r g_name g_drv g_used g_tot g_util <<< "$gpu"; g_drv=$(echo $g_drv)
+read -r d_used d_avail <<< "$(df -BG --output=used,avail / | tail -1 | tr -d 'G')"
+dcv_ok=$( dcv list-sessions 2>/dev/null | grep -q "'console'" && ss -ltn | grep -q ':8443 ' && pgrep -u ubuntu -x dcvagent >/dev/null && echo true || echo false)
+desk_ok=$(sudo -u ubuntu env DISPLAY=:0 XAUTHORITY=$H/.Xauthority xdpyinfo >/dev/null 2>&1 && echo true || echo false)
+pc=$(curl -s -m 5 http://127.0.0.1:8766/health 2>/dev/null | grep -q '"ok": true' && echo true || echo false)
+browser=$(command -v google-chrome >/dev/null && grep -q google-chrome /home/ubuntu/.config/xfce4/helpers.rc 2>/dev/null && echo true || echo false)
+svc=$(curl -s -o /dev/null -m 10 -w '%{http_code}' "${SERVICE_HEALTH_URL:-http://127.0.0.1:8765/observe}" 2>/dev/null)
+repo=$([ -d "${WS_DIR:-/nonexistent}" ] && echo true || echo false)
+dl=$([ -f /etc/vinci-deadline ] && date -u -d @"$(cat /etc/vinci-deadline)" +%FT%TZ || echo none)
+marks=$(awk '{printf "%s\"%s\":%s", (NR>1?",":""), $1, $2}' /var/log/vinci-timings.log 2>/dev/null)
+load=$(cut -d' ' -f1 /proc/loadavg); mem=$(free -m | awk '/Mem:/{print $3"/"$2}')
+printf '{"team":"%s","checks":{"nvidia_smi":%s,"driver_580":%s,"dcv_active":%s,"desktop":%s,"isaac_first_frame":%s,"first_env_loaded":%s,"shader_cache_warm":%s,"repo_present":%s,"smoke_passed":%s,"service_http_200":%s,"pc_scene":%s,"browser":%s},"gpu":"%s","driver":"%s","vram_mib":"%s/%s","gpu_util":%s,"load1":%s,"mem_mib":"%s","disk_gb":"%s used/%s free","deadline":"%s","marks":{%s}}\n' \
+  "$(cat /etc/vinci-team 2>/dev/null)" "$([ -n "$g_name" ] && echo true || echo false)" "$([[ $g_drv == 580.* ]] && echo true || echo false)" \
+  "$dcv_ok" "$desk_ok" "$(has cold_isaac_window)" "$(has cold_env_loaded)" "$(has warm_env_loaded)" "$repo" \
+  "$( [ "${SMOKE_CELLS:-0}" = "0" ] && echo true || has smoke_passed)" "$([ "$svc" = "200" ] && echo true || echo false)" "$pc" "$browser" \
+  "$(echo $g_name)" "$g_drv" "${g_used// /}" "${g_tot// /}" "${g_util:-0}" "$load" "$mem" "$d_used" "$d_avail" "$dl" "$marks"

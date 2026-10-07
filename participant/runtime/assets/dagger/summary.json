@@ -1,0 +1,141 @@
+{
+ "teacher": {
+  "success_rate": 1.0,
+  "n": 128,
+  "mean_max_opening_m": 0.4,
+  "categories": {
+   "success": 128,
+   "missed_handle": 0,
+   "reached_no_pull": 0,
+   "partial_or_slipped": 0
+  },
+  "slips": 87,
+  "recovered_after_slip": 1.0,
+  "success_without_slip": 1.0,
+  "eval_rollout_s": 39.9,
+  "teacher_ms_per_step": 0.32,
+  "perturbed": true,
+  "shift_median_nn_dist": 0.525,
+  "shift_frac_states_off_teacher_support": 0.053,
+  "reached_skill_target_0.30m": 1.0,
+  "stall_below_0.30m_if_slip": 0.0,
+  "stall_below_0.30m_if_no_slip": 0.0
+ },
+ "bc": {
+  "success_rate": 0.961,
+  "n": 128,
+  "mean_max_opening_m": 0.336,
+  "categories": {
+   "success": 123,
+   "missed_handle": 0,
+   "reached_no_pull": 2,
+   "partial_or_slipped": 3
+  },
+  "slips": 85,
+  "recovered_after_slip": 0.976,
+  "success_without_slip": 0.93,
+  "action_err_on_own_states": 0.8401,
+  "eval_rollout_s": 32.6,
+  "teacher_ms_per_step": 0.26,
+  "perturbed": true,
+  "action_err_on_teacher_states": 0.1325,
+  "shift_median_nn_dist": 2.009,
+  "shift_frac_states_off_teacher_support": 0.516,
+  "reached_skill_target_0.30m": 0.641,
+  "stall_below_0.30m_if_slip": 0.459,
+  "stall_below_0.30m_if_no_slip": 0.163
+ },
+ "bc_more": {
+  "success_rate": 0.961,
+  "n": 128,
+  "mean_max_opening_m": 0.368,
+  "categories": {
+   "success": 123,
+   "missed_handle": 1,
+   "reached_no_pull": 1,
+   "partial_or_slipped": 3
+  },
+  "slips": 87,
+  "recovered_after_slip": 0.977,
+  "success_without_slip": 0.927,
+  "action_err_on_own_states": 0.3573,
+  "eval_rollout_s": 12.8,
+  "teacher_ms_per_step": 0.31,
+  "perturbed": true,
+  "shift_median_nn_dist": 0.929,
+  "shift_frac_states_off_teacher_support": 0.263,
+  "reached_skill_target_0.30m": 0.852,
+  "stall_below_0.30m_if_slip": 0.172,
+  "stall_below_0.30m_if_no_slip": 0.098
+ },
+ "r1": {
+  "success_rate": 0.977,
+  "n": 128,
+  "mean_max_opening_m": 0.392,
+  "categories": {
+   "success": 125,
+   "missed_handle": 0,
+   "reached_no_pull": 0,
+   "partial_or_slipped": 3
+  },
+  "slips": 87,
+  "recovered_after_slip": 0.989,
+  "success_without_slip": 0.951,
+  "action_err_on_own_states": 0.3158,
+  "eval_rollout_s": 10.6,
+  "teacher_ms_per_step": 0.24,
+  "perturbed": true,
+  "action_err_on_teacher_states": 0.1431,
+  "shift_median_nn_dist": 1.034,
+  "shift_frac_states_off_teacher_support": 0.212,
+  "reached_skill_target_0.30m": 0.969,
+  "stall_below_0.30m_if_slip": 0.023,
+  "stall_below_0.30m_if_no_slip": 0.049
+ },
+ "r2": {
+  "success_rate": 0.977,
+  "n": 128,
+  "mean_max_opening_m": 0.394,
+  "categories": {
+   "success": 125,
+   "missed_handle": 0,
+   "reached_no_pull": 0,
+   "partial_or_slipped": 3
+  },
+  "slips": 87,
+  "recovered_after_slip": 0.977,
+  "success_without_slip": 0.976,
+  "action_err_on_own_states": 0.2065,
+  "eval_rollout_s": 12.8,
+  "teacher_ms_per_step": 0.28,
+  "perturbed": true,
+  "action_err_on_teacher_states": 0.1326,
+  "shift_median_nn_dist": 0.761,
+  "shift_frac_states_off_teacher_support": 0.11,
+  "reached_skill_target_0.30m": 0.977,
+  "stall_below_0.30m_if_slip": 0.023,
+  "stall_below_0.30m_if_no_slip": 0.024
+ },
+ "bc_failure_vs_params": {
+  "cab_dx": {
+   "fail_mean": -0.007,
+   "success_mean": 0.01
+  },
+  "cab_dy": {
+   "fail_mean": -0.008,
+   "success_mean": 0.004
+  },
+  "cab_dyaw": {
+   "fail_mean": 0.095,
+   "success_mean": 0.009
+  },
+  "drawer_damping_scale": {
+   "fail_mean": 1.7,
+   "success_mean": 2.281
+  },
+  "drawer_friction": {
+   "fail_mean": 0.162,
+   "success_mean": 0.147
+  }
+ }
+}

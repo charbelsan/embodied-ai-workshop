@@ -1,0 +1,8 @@
+deploy/config.env
+deploy/state/
+participant/runtime/policies/*.pt
+participant/runtime/assets/**/*.mp4
+participant/runtime/ASSETS.sha256
+regenerated/
+__pycache__/
+*.pyc

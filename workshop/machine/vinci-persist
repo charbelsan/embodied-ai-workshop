@@ -1,0 +1,23 @@
+#!/bin/bash
+# Persist this team machine's outputs to S3 and VERIFY (root). Last line: PERSIST_OK <files> <bytes> <dest> | PERSIST_FAILED <reason>
+source /etc/vinci/workshop.env
+[ -n "${PERSIST_BUCKET:-}" ] || { echo "PERSIST_SKIPPED no PERSIST_BUCKET configured in /etc/vinci/workshop.env"; exit 0; }
+TEAM=$(cat /etc/vinci-team 2>/dev/null || echo unknown); EVENT=$(cat /etc/vinci-event 2>/dev/null || echo unknown)
+T=$(curl -s -X PUT http://169.254.169.254/latest/api/token -H 'X-aws-ec2-metadata-token-ttl-seconds: 60')
+IID=$(curl -s -H "X-aws-ec2-metadata-token: $T" http://169.254.169.254/latest/meta-data/instance-id)
+DEST="s3://$PERSIST_BUCKET/team-outputs/$EVENT/$TEAM/$IID"
+A="aws --region ${PERSIST_REGION:-us-east-1}"
+man=$(mktemp); n=0; bytes=0
+for p in $PERSIST_PATHS; do
+  [ -e "$p" ] || continue
+  key=$(echo "${p#/}" | tr '/' '_')
+  if [ -d "$p" ]; then $A s3 sync "$p" "$DEST/$key" --only-show-errors || { echo "PERSIST_FAILED sync $p"; exit 1; }
+    (cd "$p" && find . -type f -printf "$key/%P %s\n") >> $man
+  else $A s3 cp "$p" "$DEST/$key" --only-show-errors || { echo "PERSIST_FAILED cp $p"; exit 1; }
+    echo "$key $(stat -c %s "$p")" >> $man; fi
+done
+remote=$($A s3 ls "$DEST/" --recursive | awk -v d="team-outputs/$EVENT/$TEAM/$IID/" '{sub(d,"",$4); print $4, $3}' | sort)
+missing=$(sort $man | comm -23 - <(echo "$remote"))
+n=$(wc -l < $man); bytes=$(awk '{s+=$2} END{print s+0}' $man)
+if [ -n "$missing" ]; then echo "$missing" | head -5; echo "PERSIST_FAILED $(echo "$missing" | wc -l) files missing or with a different size in $DEST"; exit 1; fi
+echo "PERSIST_OK $n files $bytes bytes $DEST"

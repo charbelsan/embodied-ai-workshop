@@ -1,0 +1,45 @@
+VINCI Embodied AI Workshop
+Copyright 2026 Reflexion Robotics. Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This workshop builds on the following third-party software and assets. Each keeps its own license;
+nothing below is redistributed in this repository unless stated.
+
+NVIDIA Isaac Sim 5.1 (Omniverse)
+  NVIDIA Omniverse License Agreement / Isaac Sim additional terms. Installed from NVIDIA's pip packages
+  on each machine; using it requires accepting the NVIDIA Omniverse EULA (OMNI_KIT_ACCEPT_EULA=YES).
+  https://docs.isaacsim.omniverse.nvidia.com
+
+Isaac Lab 2.3.2
+  BSD-3-Clause. https://github.com/isaac-sim/IsaacLab
+
+EmbodiedSWE
+  Apache License 2.0. https://github.com/EmbodiedSWE/EmbodiedSWE
+  Used as an installation dependency only: its Isaac Sim 5.1 + Isaac Lab 2.3.2 installer
+  (scripts/bootstrap_isaaclab_5_1.sh, pinned commit) builds the simulator environment of each machine.
+
+LeRobot and SmolVLA
+  Apache License 2.0. https://github.com/huggingface/lerobot
+  SmolVLA base model: https://huggingface.co/lerobot/smolvla_base
+  Used by scripts/regenerate.sh (demonstration dataset and fine-tuning); the notebook shows pre-computed results.
+
+RSL-RL
+  BSD-3-Clause. https://github.com/leggedrobotics/rsl_rl (PPO training, installed with Isaac Lab)
+
+Franka Emika Panda and IKEA Sektion cabinet assets
+  Provided with Isaac Lab / Isaac Sim under their respective terms.
+
+Amazon DCV
+  Remote desktop server, free of charge on Amazon EC2. https://aws.amazon.com/hpc/dcv/
+
+Visual Studio Code
+  Microsoft Software License. https://code.visualstudio.com
+
+JupyterLab, NumPy, Matplotlib, Pillow, PyYAML
+  BSD / PSF-style licenses, installed from PyPI.
+
+MuJoCo (CPU edition, cpu/)
+  Apache License 2.0. https://github.com/google-deepmind/mujoco (installed with pip)
+
+MuJoCo Menagerie: Franka Emika Panda model (CPU edition)
+  Apache License 2.0. https://github.com/google-deepmind/mujoco_menagerie
+  Downloaded at a pinned commit by cpu/setup_cpu.py; not redistributed in this repository.

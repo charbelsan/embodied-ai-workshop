@@ -1,0 +1,9 @@
+#!/bin/bash
+# PC scene (learned RAM insertion, headless) under its bounded supervisor, as a systemd service started by the boot
+# warm-up: a first start that hangs (seen on fresh machines) is killed and restarted before the team arrives.
+# start.sh sees it through supervisor.pid / the /health endpoint and does not start a second one.
+source /etc/vinci/workshop.env
+RT=/opt/vinci-workshop; PCDIR=/home/ubuntu/.vinci/pc_scene
+mkdir -p "$PCDIR" "$WS_DIR/results/pc_runs"; echo $$ > "$PCDIR/supervisor.pid"
+cd "$WS_DIR" && exec python3 "$RT/scripts/pcgr_server_supervisor.py" --port 8766 --run_dir "$PCDIR" --python "$WS_PY" \
+  --cwd "$WS_DIR" --boot_timeout "${PC_BOOT_TIMEOUT:-150}" -- --runs_dir "$WS_DIR/results/pc_runs"

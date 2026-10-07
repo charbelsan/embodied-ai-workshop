@@ -1,0 +1,41 @@
+#!/bin/bash
+# Soft reset of a team machine (root, no relaunch): stop the team's processes, restore the pristine workspace,
+# restart the DCV desktop and the workshop service with the Isaac UI.
+source /etc/vinci/workshop.env
+M=/var/log/vinci-timings.log
+mark() { echo "$1 $(date +%s.%N) $(date -u +%FT%TZ) ${2:-}" >> $M; }
+http_ok() { [ "$(curl -s -o /dev/null -m 10 -w '%{http_code}' "$SERVICE_HEALTH_URL")" = "200" ]; }
+T0=$(date +%s); mark reset_start
+systemctl stop vinci-skill-server vinci-pc-scene
+pkill -u ubuntu -f "$RESET_KILL_RE"; sleep 5; pkill -9 -u ubuntu -f "$RESET_KILL_RE"
+[ -d /opt/vinci/pristine/workspace ] || { echo "no pristine workspace"; exit 1; }
+case "${WS_DIR:-}" in ""|/) echo "WS_DIR is not set: refusing to reset (rsync --delete would target /)"; exit 1;; esac
+rsync -a --delete /opt/vinci/pristine/workspace/ "$WS_DIR/"
+rm -rf /tmp/vinci_* 2>/dev/null
+chown -R ubuntu:ubuntu "$WS_DIR"
+mark reset_workspace_restored
+systemctl restart lightdm; sleep 5; systemctl restart dcvserver
+until dcv list-sessions 2>/dev/null | grep -q "'console'" && ss -ltn | grep -q ':8443 '; do sleep 2; done
+[ -f /etc/dcv/default.perm ] && dcv set-permissions --session console --file /etc/dcv/default.perm >/dev/null 2>&1
+# XFCE may restore its saved session without restarting the DCV agent launcher.
+# A listening server and a console session alone do not provide desktop frames.
+if ! pgrep -u ubuntu -f '^/usr/lib/x86_64-linux-gnu/dcv/dcvagentlauncher( |$)' >/dev/null; then
+  sudo -u ubuntu env DISPLAY=:0 XAUTHORITY=/home/ubuntu/.Xauthority \
+    XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+    XDG_SESSION_TYPE=x11 /usr/lib/x86_64-linux-gnu/dcv/dcvxdgagentlauncher \
+    </dev/null >>/var/log/vinci-dcv-agent-start.log 2>&1
+fi
+for _ in $(seq 30); do pgrep -u ubuntu -x dcvagent >/dev/null && break; sleep 1; done
+if ! pgrep -u ubuntu -x dcvagent >/dev/null; then
+  mark reset_failed "DCV desktop agent missing"
+  echo "reset: DCV desktop agent missing; see /var/log/dcv/agentlauncher.ubuntu.log"
+  exit 1
+fi
+mark reset_dcv_ready
+sleep 5
+systemctl restart vinci-skill-server
+for _ in $(seq 900); do http_ok && break; sleep 1; done
+systemctl start vinci-pc-scene   # the team's START WORKSHOP finds it up
+for _ in $(seq 300); do curl -s -m 5 http://127.0.0.1:8766/health 2>/dev/null | grep -q '"ok": true' && break; systemctl is-active --quiet vinci-pc-scene || break; sleep 1; done
+if http_ok && curl -fsS -m 5 http://127.0.0.1:8766/health | grep -q '"ok": true'; then mark reset_done "$(( $(date +%s) - T0 ))s"; echo "reset ok in $(( $(date +%s) - T0 ))s"
+else mark reset_failed; echo "reset: main service or PC scene not ready"; exit 1; fi

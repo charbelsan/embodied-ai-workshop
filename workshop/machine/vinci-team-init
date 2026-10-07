@@ -1,0 +1,26 @@
+#!/bin/bash
+# Turn a workshop machine (built with bootstrap_machine.sh + install_workshop.sh) into the machine of one team.
+# Same steps as the AWS user-data of deploy/team.sh, for other providers (Azure run-command, cloud-init, by hand).
+#
+#   sudo vinci-team-init t03 vinci-t03 "$(openssl passwd -6 'the-team-password')"
+#
+# Sets the team id, creates the team's desktop account (password given as a SHA-512 crypt hash, never in clear),
+# lets it join the DCV console session, locks the default desktop user's password, then restarts the display and
+# the warm-up. Safe to run again with a new password.
+set -euo pipefail
+TEAM=${1:?usage: vinci-team-init TEAM USER PASSWORD_HASH}; DUSER=${2:?user}; HASH=${3:?password hash (openssl passwd -6)}
+[ "$(id -u)" = 0 ] || { echo "run with sudo"; exit 1; }
+case "$HASH" in '$6$'*) ;; *) echo "the password must be a SHA-512 crypt hash: openssl passwd -6 'password'"; exit 1;; esac
+M=/var/log/vinci-timings.log
+mark() { echo "$1 $(date +%s.%N) $(date -u +%FT%TZ)" >> $M; }
+mark team_init_start
+echo "$TEAM" > /etc/vinci-team
+id -u "$DUSER" >/dev/null 2>&1 || useradd -m -s /bin/bash "$DUSER"
+echo "$DUSER:$HASH" | chpasswd -e
+OWNER=$(sed -n 's/^owner *= *"\(.*\)"/\1/p' /etc/dcv/dcv.conf 2>/dev/null | head -1)
+[ -n "$OWNER" ] && [ "$OWNER" != "$DUSER" ] && passwd -l "$OWNER" >/dev/null 2>&1 || true
+printf '[permissions]\n%%owner%% allow builtin\n%s allow builtin\n' "$DUSER" > /etc/dcv/default.perm
+/usr/local/bin/vinci-xorg-fix --restart && mark xorg_fixed
+systemctl is-active --quiet vinci-warmup.service || systemctl start --no-block vinci-warmup.service
+mark team_init_end
+echo "$TEAM ready for $DUSER (DCV on port 8443; warm-up running ~3-5 min)"

@@ -1,0 +1,20 @@
+# ─── Your team's knobs. evaluate.sh and submit.sh read this file. ───
+task: kitting_cabinet          # which challenge (don't change unless the organizers say so)
+
+providers:                     # which method runs each skill
+  open_drawer: rl              # rl: trained RL policy, fast, reads the exact handle pose
+                               # analytic: scripted geometric controller (reads the handle pose too)
+                               # visual: DAgger student (reference model), its policy acts from the RGB-D cameras + joints (cameras on -> slower)
+  pick_and_place: scripted     # scripted
+
+# used by the starter brain.py; your own brain can ignore them or add new ones
+max_retries: 0                 # how many times the starter brain repeats a failed skill call (try 1 or 2)
+verification:
+  enabled: false               # starter brain: look at the scene after each placement (inspect_scene).
+                               # Set it to true for a first easy gain (+10 points: see the score detail of ./evaluate.sh).
+
+evaluate:                      # ./evaluate.sh
+  episodes: 8                  # DEV episodes per run (more = slower but more reliable)
+  procs: 4                     # episodes played in parallel (CPU physics)
+  seed0: 0                     # first DEV seed
+  videos: 0                    # also record N episodes with the cameras (slower); 0 = no video

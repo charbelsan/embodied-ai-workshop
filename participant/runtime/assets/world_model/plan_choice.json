@@ -1,0 +1,25 @@
+{
+ "transitions": 122624,
+ "collect_s": 20.3,
+ "train_s": 6.4,
+ "val_mse_norm": 0.0941,
+ "horizon_steps": 60,
+ "candidates": [
+  "policy",
+  "policy + noise(0.5)",
+  "random"
+ ],
+ "predicted_final_opening_m": [
+  0.416,
+  0.335,
+  0.023
+ ],
+ "real_final_opening_m": [
+  0.4,
+  0.284,
+  0.0
+ ],
+ "chosen_by_model": "policy",
+ "best_in_reality": "policy",
+ "mean_abs_err_opening_m": 0.0249
+}

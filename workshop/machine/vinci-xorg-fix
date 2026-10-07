@@ -1,0 +1,12 @@
+#!/bin/bash
+# Point Xorg at the GPU actually present. The AMI's xorg.conf pins the PCI BusID of the machine it was built on,
+# and it differs between instance sizes/launches (g6e.2xlarge PCI:48:0:0, g6e.8xlarge PCI:54:0:0) -> "No devices detected".
+B=$(nvidia-smi --query-gpu=pci.bus_id --format=csv,noheader | head -1)   # e.g. 00000000:36:00.0
+IFS=':.' read -r _ bus dev fn <<< "$B"
+ID="PCI:$((16#$bus)):$((16#$dev)):$((16#$fn))"
+if grep -q "BusID *\"$ID\"" /etc/X11/xorg.conf; then echo "xorg BusID ok ($ID)"; exit 0; fi
+sed -i "s/^\( *\)BusID .*/\1BusID          \"$ID\"/" /etc/X11/xorg.conf
+echo "xorg BusID set to $ID"
+if [ "${1:-}" = "--restart" ]; then   # first boot: lightdm already failed before user-data ran
+  systemctl reset-failed lightdm; systemctl restart lightdm; sleep 5; systemctl restart dcvserver
+fi

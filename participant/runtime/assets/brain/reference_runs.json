@@ -1,0 +1,525 @@
+{
+ "what": "Claude Code (headless) as the Brain, only the vinci-robot MCP tools (observe, open_drawer, close_drawer); mission: open the top drawer, check on the images, retry if needed, close it. Judged by the simulator, not by the agent.",
+ "summary": {
+  "runs": 10,
+  "task_success": 10,
+  "opened": 10,
+  "closed": 10,
+  "claims_match_truth": 10,
+  "open_drawer_calls": 10,
+  "models": [
+   "claude-sonnet-5-5"
+  ],
+  "checkpoints": [
+   "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+  ],
+  "median_wall_s": 36.7,
+  "total_cost_usd": 0.41
+ },
+ "runs": [
+  {
+   "run": 0,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 36.7,
+   "cost_usd": 0.041735400000000006
+  },
+  {
+   "run": 1,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 41.2,
+   "cost_usd": 0.0418742
+  },
+  {
+   "run": 2,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 40.2,
+   "cost_usd": 0.0385056
+  },
+  {
+   "run": 3,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 40.1,
+   "cost_usd": 0.042495000000000005
+  },
+  {
+   "run": 4,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 36.2,
+   "cost_usd": 0.041369600000000006
+  },
+  {
+   "run": 5,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 35.5,
+   "cost_usd": 0.037708000000000005
+  },
+  {
+   "run": 6,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 36.5,
+   "cost_usd": 0.0389846
+  },
+  {
+   "run": 7,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 37.3,
+   "cost_usd": 0.042345799999999996
+  },
+  {
+   "run": 8,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 36.3,
+   "cost_usd": 0.0411924
+  },
+  {
+   "run": 9,
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools_called": [
+    "observe",
+    "open_drawer",
+    "observe",
+    "close_drawer",
+    "observe"
+   ],
+   "checkpoints_executed": [
+    "5d566a547cb54ea491ed4bc16963316a935a46ad6bc04adefcd3d81b3d294954"
+   ],
+   "observations_available": "observe(): front + wrist camera images + joint state; skills report execution only",
+   "brain_claim": {
+    "opened_seen": true,
+    "closed_seen": true,
+    "attempts": 1
+   },
+   "evaluator": {
+    "max_opening_m": 0.4,
+    "final_opening_m": 0.0,
+    "opened_0.30m": true,
+    "closed": true,
+    "task_success": true
+   },
+   "claim_matches_truth": true,
+   "num_turns": 7,
+   "wall_s": 36.6,
+   "cost_usd": 0.041868199999999994
+  }
+ ],
+ "verification_tests": {
+  "partial_student": {
+   "note": "weak student (BC, 300 steps) opens the drawer only ~0.27 m: the agent calls it open from the images in 3/3 runs (the 0.30 m target is not visible at a glance)",
+   "runs": [
+    {
+     "tools_called": [
+      "observe",
+      "open_drawer",
+      "observe",
+      "close_drawer",
+      "observe"
+     ],
+     "evaluator": {
+      "max_opening_m": 0.305,
+      "final_opening_m": 0.0,
+      "opened_0.30m": true,
+      "closed": true,
+      "task_success": true
+     },
+     "brain_claim": {
+      "opened_seen": true,
+      "closed_seen": true,
+      "attempts": 1
+     },
+     "claim_matches_truth": true,
+     "checkpoints_executed": [
+      "7d3c108af5e924f950c3bc8f3c7228457c385298a1c4c6eaecb36650205a56fe"
+     ]
+    },
+    {
+     "tools_called": [
+      "observe",
+      "open_drawer",
+      "observe",
+      "close_drawer",
+      "observe"
+     ],
+     "evaluator": {
+      "max_opening_m": 0.271,
+      "final_opening_m": 0.0,
+      "opened_0.30m": false,
+      "closed": true,
+      "task_success": false
+     },
+     "brain_claim": {
+      "opened_seen": true,
+      "closed_seen": true,
+      "attempts": 1
+     },
+     "claim_matches_truth": false,
+     "checkpoints_executed": [
+      "7d3c108af5e924f950c3bc8f3c7228457c385298a1c4c6eaecb36650205a56fe"
+     ]
+    },
+    {
+     "tools_called": [
+      "observe",
+      "open_drawer",
+      "observe",
+      "close_drawer",
+      "observe"
+     ],
+     "evaluator": {
+      "max_opening_m": 0.271,
+      "final_opening_m": 0.0,
+      "opened_0.30m": false,
+      "closed": true,
+      "task_success": false
+     },
+     "brain_claim": {
+      "opened_seen": true,
+      "closed_seen": true,
+      "attempts": 1
+     },
+     "claim_matches_truth": false,
+     "checkpoints_executed": [
+      "7d3c108af5e924f950c3bc8f3c7228457c385298a1c4c6eaecb36650205a56fe"
+     ]
+    }
+   ]
+  },
+  "failing_student": {
+   "note": "failing student (BC, 30 steps) never opens: the agent sees it on the images, retries 3 times and reports the failure in 3/3 runs",
+   "runs": [
+    {
+     "tools_called": [
+      "observe",
+      "open_drawer",
+      "observe",
+      "open_drawer",
+      "observe",
+      "open_drawer",
+      "observe",
+      "close_drawer",
+      "observe"
+     ],
+     "evaluator": {
+      "max_opening_m": 0.0,
+      "final_opening_m": 0.0,
+      "opened_0.30m": false,
+      "closed": true,
+      "task_success": false
+     },
+     "brain_claim": {
+      "opened_seen": false,
+      "closed_seen": true,
+      "attempts": 3
+     },
+     "claim_matches_truth": true,
+     "checkpoints_executed": [
+      "3c49f08f757e7102f907775f22badbb8056092e77f129ec817880b8afd6243da"
+     ]
+    },
+    {
+     "tools_called": [
+      "observe",
+      "open_drawer",
+      "observe",
+      "open_drawer",
+      "observe",
+      "open_drawer",
+      "observe",
+      "close_drawer",
+      "observe"
+     ],
+     "evaluator": {
+      "max_opening_m": 0.0,
+      "final_opening_m": 0.0,
+      "opened_0.30m": false,
+      "closed": true,
+      "task_success": false
+     },
+     "brain_claim": {
+      "opened_seen": false,
+      "closed_seen": true,
+      "attempts": 3
+     },
+     "claim_matches_truth": true,
+     "checkpoints_executed": [
+      "3c49f08f757e7102f907775f22badbb8056092e77f129ec817880b8afd6243da"
+     ]
+    },
+    {
+     "tools_called": [
+      "observe",
+      "open_drawer",
+      "observe",
+      "open_drawer",
+      "observe",
+      "open_drawer",
+      "observe",
+      "close_drawer",
+      "observe"
+     ],
+     "evaluator": {
+      "max_opening_m": 0.0,
+      "final_opening_m": 0.0,
+      "opened_0.30m": false,
+      "closed": true,
+      "task_success": false
+     },
+     "brain_claim": {
+      "opened_seen": false,
+      "closed_seen": true,
+      "attempts": 3
+     },
+     "claim_matches_truth": true,
+     "checkpoints_executed": [
+      "3c49f08f757e7102f907775f22badbb8056092e77f129ec817880b8afd6243da"
+     ]
+    }
+   ]
+  }
+ }
+}

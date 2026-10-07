@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "vinci-robot": {
+      "command": "/opt/vinci-workshop/nb-venv/bin/python",
+      "args": ["/opt/vinci-workshop/lib/mcp_server.py"],
+      "env": {"VINCI_WORKSPACE": "/home/ubuntu/vinci-workshop"}
+    }
+  }
+}

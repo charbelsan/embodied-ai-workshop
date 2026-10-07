@@ -1,0 +1,13 @@
+{
+  "skill": "insert_ram_student",
+  "path": "policies/insert_ram_student.pt",
+  "sha256": "2101d50b51e73842035d561ee67c221eb7686aac104eb9abdc310ee9b4042135",
+  "stage": "chain2 DAgger r5 (teacher v2 dc870664, 46080 samples)",
+  "teacher_sha256": "dc870664660a03471c2734cda9dace8d644e7171bea7ba3d9262b308dfeb6a17",
+  "sensors": {
+    "front": "RGB-D 128->64 px, fixed",
+    "wrist": "upstream Franka wrist view, focal 18, RGB-D 128->64 px",
+    "proprio": "9 joint pos + 9 joint vel"
+  },
+  "eval": "56/64 = 87.5 % (IC95 77.2-93.5), seeds 20000-20063, case +-5 cm / +-12 deg, grader ram_seated after release"
+}

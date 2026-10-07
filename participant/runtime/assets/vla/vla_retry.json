@@ -1,0 +1,9 @@
+{
+ "episodes": 4,
+ "first_attempt_success": 0,
+ "with_retry_cube_placed": 1,
+ "final_task_success": 1,
+ "mean_attempts": 3.0,
+ "timeboxed": true,
+ "note": "killed by the 30-min timebox after 4 episodes (~6.5 min/episode with 3 concurrent Isaac processes)"
+}

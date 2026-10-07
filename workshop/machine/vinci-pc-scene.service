@@ -1,0 +1,14 @@
+[Unit]
+Description=VINCI workshop PC scene (RAM insertion, headless) under its bounded supervisor
+After=vinci-skill-server.service
+
+[Service]
+User=ubuntu
+Environment=HOME=/home/ubuntu OMNI_KIT_ACCEPT_EULA=YES PYTHONUNBUFFERED=1
+ExecStart=/usr/local/bin/vinci-pc-scene
+Restart=no
+KillMode=control-group
+TimeoutStopSec=20
+StandardInput=null
+StandardOutput=append:/var/log/vinci-warmup/pc_scene.log
+StandardError=inherit

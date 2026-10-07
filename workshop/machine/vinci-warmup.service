@@ -1,0 +1,9 @@
+[Unit]
+Description=VINCI team machine warm-up (DCV, Isaac UI cold+warm, smoke test, workshop service)
+After=graphical.target dcvserver.service cloud-final.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/vinci-warmup
+TimeoutStartSec=3600
+[Install]
+WantedBy=graphical.target

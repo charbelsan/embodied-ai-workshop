@@ -1,0 +1,43 @@
+#!/bin/bash
+# Google Chrome as the desktop's default browser (xdg-open / XFCE exo), without first-run screens. Idempotent. Root.
+set -e
+export DEBIAN_FRONTEND=noninteractive
+if ! command -v google-chrome >/dev/null; then
+  curl -fsSL -o /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  apt-get install -y -qq /tmp/chrome.deb >/dev/null; rm -f /tmp/chrome.deb
+fi
+# symbols and emoji of the notebook (otherwise shown as squares)
+apt-get install -y -qq fonts-noto-color-emoji fonts-noto-core fonts-dejavu-core >/dev/null
+mkdir -p /etc/opt/chrome/policies/managed
+cat > /etc/opt/chrome/policies/managed/vinci.json <<'J'
+{"DefaultBrowserSettingEnabled": false, "PromotionalTabsEnabled": false, "BrowserSignin": 0, "SyncDisabled": true,
+ "MetricsReportingEnabled": false, "PasswordManagerEnabled": false, "PrivacySandboxPromptEnabled": false, "RestoreOnStartup": 5,
+ "DefaultSearchProviderEnabled": true, "DefaultSearchProviderName": "Google", "DefaultSearchProviderSearchURL": "https://www.google.com/search?q={searchTerms}",
+ "AutofillAddressEnabled": false, "AutofillCreditCardEnabled": false, "TranslateEnabled": false}
+J
+cat > /opt/google/chrome/initial_preferences <<'J'
+{"distribution": {"skip_first_run_ui": true, "suppress_first_run_default_browser_prompt": true, "suppress_first_run_bubble": true,
+  "import_history": false, "import_bookmarks": false}, "browser": {"check_default_browser": false}, "first_run_tabs": []}
+J
+update-alternatives --set x-www-browser /usr/bin/google-chrome-stable >/dev/null 2>&1 || true
+update-alternatives --set gnome-www-browser /usr/bin/google-chrome-stable >/dev/null 2>&1 || true
+for H in /home/ubuntu /etc/skel; do mkdir -p $H/.config/xfce4; printf 'WebBrowser=google-chrome\n' > $H/.config/xfce4/helpers.rc; done
+mkdir -p /home/ubuntu/.config; printf '[Default Applications]\nx-scheme-handler/http=google-chrome.desktop\nx-scheme-handler/https=google-chrome.desktop\ntext/html=google-chrome.desktop\napplication/pdf=google-chrome.desktop\nvideo/mp4=google-chrome.desktop\n' > /home/ubuntu/.config/mimeapps.list
+# profile already past its first run (no welcome, terms or search-engine choice screens)
+mkdir -p /home/ubuntu/.config/google-chrome && touch "/home/ubuntu/.config/google-chrome/First Run"
+chown -R ubuntu:ubuntu /home/ubuntu/.config
+# DCV: never disconnect an idle participant (explanations can last more than the default timeout)
+if [ -f /etc/dcv/dcv.conf ]; then
+  grep -q '^\[connectivity\]' /etc/dcv/dcv.conf || printf '\n[connectivity]\n' >> /etc/dcv/dcv.conf
+  grep -q '^idle-timeout' /etc/dcv/dcv.conf || sed -i '/^\[connectivity\]/a idle-timeout=0' /etc/dcv/dcv.conf
+  # sharper desktop: the session follows the browser window up to 2560x1600 (web client default cap: 1920x1080)
+  grep -q '^\[display\]' /etc/dcv/dcv.conf || printf '\n[display]\n' >> /etc/dcv/dcv.conf
+  sed -i '/^web-client-max-head-resolution/d; /^max-head-resolution/d' /etc/dcv/dcv.conf
+  sed -i '/^\[display\]/a web-client-max-head-resolution=(2560, 1600)\nmax-head-resolution=(2560, 1600)' /etc/dcv/dcv.conf
+fi
+X=/etc/X11/xorg.conf   # X screen large enough for that size (applies at the next X start)
+if [ -f $X ]; then
+  if grep -qE '^\s*Virtual' $X; then sed -i -E 's/^(\s*)Virtual .*/\1Virtual     2560 1600/' $X
+  else sed -i '/SubSection *"Display"/a\        Virtual     2560 1600' $X; fi
+fi
+echo "browser: $(google-chrome --version)"

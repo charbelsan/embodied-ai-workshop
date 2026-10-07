@@ -1,0 +1,9 @@
+[Unit]
+Description=Set Xorg BusID to the GPU present on this instance
+After=systemd-modules-load.service
+Before=display-manager.service lightdm.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/vinci-xorg-fix
+[Install]
+WantedBy=graphical.target

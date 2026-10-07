@@ -1,0 +1,4 @@
+#!/bin/bash
+# Workshop service (the notebook's backend). Extra args are appended (e.g. --headless for the smoke test).
+source /etc/vinci/workshop.env
+cd "$WS_DIR" && exec $WS_PY $SERVICE_CMD "$@"

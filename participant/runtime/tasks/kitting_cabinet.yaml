@@ -1,0 +1,17 @@
+# Task registry entry. team/config.yaml selects a task by name (task: kitting_cabinet).
+# Switching the team challenge to another task = add tasks/<name>.yaml + point config.yaml at it.
+title: "VINCI kitting workstation"
+mission: >-
+  Put this industrial workstation back in order: put each part where the work order says,
+  and leave the workstation in its expected final state.
+# harness that plays one episode: solve(sk, lab, budget_s, open_provider) -> (trace, summary)
+harness: scripts/challenge_eval.py
+dev_runner: scripts/score_dev.py
+levels: [training, dev]          # the only levels a team machine can play
+default_level: dev
+# skills the brain may call through tools.call(name, ...)
+primitives: [inspect_scene, open_drawer, pick_and_place, close_drawer, move_to, go_pick_start, clear_of_drawer, stop]
+# provider -> needs the cameras (slower evaluation with GPU rendering)
+vision_providers:
+  open_drawer: [visual]
+  pick_and_place: [vla]

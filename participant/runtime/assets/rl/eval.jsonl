@@ -1,0 +1,7 @@
+{"iteration": 0, "success_rate": 0.0, "mean_max_opening_m": 0.0}
+{"iteration": 50, "success_rate": 1.0, "mean_max_opening_m": 0.326}
+{"iteration": 100, "success_rate": 1.0, "mean_max_opening_m": 0.4}
+{"iteration": 150, "success_rate": 1.0, "mean_max_opening_m": 0.4}
+{"iteration": 200, "success_rate": 1.0, "mean_max_opening_m": 0.4}
+{"iteration": 250, "success_rate": 1.0, "mean_max_opening_m": 0.4}
+{"iteration": 299, "success_rate": 1.0, "mean_max_opening_m": 0.4}
